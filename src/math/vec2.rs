@@ -1,6 +1,6 @@
-use std::ops::{Add, Mul, Sub};
+use std::ops::{Add, Div, Mul, Sub};
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Default)]
 pub struct Vector2 {
     pub x: f32,
     pub y: f32,
@@ -27,11 +27,24 @@ impl Vector2 {
     // It normalizes the given Vector2
     pub fn normalize(&mut self) -> &Self {
         let len = self.length();
-        if len != 0.0 {
+
+        if len > f32::EPSILON {
             self.x /= len;
             self.y /= len;
+        } else {
+            self.x = 0.0;
+            self.y = 0.0;
         }
         self
+    }
+
+    pub fn normalize_copy(&self) -> Self {
+        let len = self.length();
+        if len > f32::EPSILON {
+            Vector2::new(self.x / len, self.y / len)
+        } else {
+            Vector2::new(0.0, 0.0)
+        }
     }
 
     // Fluent / mutable methods
@@ -87,5 +100,29 @@ impl Mul<f32> for Vector2 {
 
     fn mul(self, rhs: f32) -> Vector2 {
         Vector2::new(self.x * rhs, self.y * rhs)
+    }
+}
+
+impl Div<f32> for Vector2 {
+    type Output = Vector2;
+
+    fn div(self, rhs: f32) -> Vector2 {
+        Vector2::new(self.x / rhs, self.y / rhs)
+    }
+}
+
+impl Mul<Vector2> for f32 {
+    type Output = Vector2;
+
+    fn mul(self, rhs: Vector2) -> Vector2 {
+        Vector2::new(self * rhs.x, self * rhs.y)
+    }
+}
+
+impl Mul<&Vector2> for f32 {
+    type Output = Vector2;
+
+    fn mul(self, rhs: &Vector2) -> Vector2 {
+        Vector2::new(self * rhs.x, self * rhs.y)
     }
 }
