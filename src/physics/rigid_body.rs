@@ -85,7 +85,7 @@ impl RigidBody {
         let difference = b.position - a.position;
         let len = difference.length();
         if len > f32::EPSILON {
-            difference
+            difference.normalize_copy()
         } else {
             Vector2::new(1.0, 0.0)
         }
