@@ -1,4 +1,4 @@
-use std::ops::{Add, Div, Mul, Sub};
+use std::ops::{Add, Div, Mul, Neg, Sub};
 
 #[derive(Debug, Copy, Clone, PartialEq, Default)]
 pub struct Vector2 {
@@ -116,6 +116,14 @@ impl Mul<Vector2> for f32 {
 
     fn mul(self, rhs: Vector2) -> Vector2 {
         Vector2::new(self * rhs.x, self * rhs.y)
+    }
+}
+
+impl Neg for Vector2 {
+    type Output = Vector2;
+
+    fn neg(self) -> Vector2 {
+        Vector2::new(-self.x, -self.y)
     }
 }
 

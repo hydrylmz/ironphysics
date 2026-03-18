@@ -17,16 +17,26 @@ fn conf() -> Conf {
 #[macroquad::main(conf)]
 async fn main() {
     let mut bodies = vec![
-        RigidBody::new(Vector2::new(3.0, 40.0), Vector2::new(2.0, 0.0), 2.0),
-        RigidBody::new(Vector2::new(5.0, 5.0), Vector2::new(-5.0, 2.0), 0.5),
-        RigidBody::new(Vector2::new(-7.0, 8.0), Vector2::new(0.0, 0.0), 1.0),
-        RigidBody::new(Vector2::new(-15.0, 15.0), Vector2::new(4.0, -2.0), 1.5),
+        // 1. The Heavyweight (Mass: 20.0, Radius: 1.5)
+        RigidBody::new(Vector2::new(3.0, 40.0), Vector2::new(2.0, 0.0), 20.0),
+        // 2. The Featherweight (Mass: 0.2, Radius: 0.4)
+        RigidBody::new(Vector2::new(5.0, 5.0), Vector2::new(-5.0, 2.0), 0.2),
+        // 3. The Standard Ball (Mass: 2.0, Radius: 0.8)
+        RigidBody::new(Vector2::new(-7.0, 8.0), Vector2::new(0.0, 0.0), 2.0),
+        // 4. The Large Balloon (Mass: 0.5, Radius: 2.0) - High volume, low mass
+        RigidBody::new(Vector2::new(-15.0, 15.0), Vector2::new(4.0, -2.0), 0.5),
     ];
 
-    bodies[0].radius = 0.8;
-    bodies[1].drag_coefficient = 0.05;
-    bodies[2].drag_coefficient = 0.8;
-    bodies[3].radius = 1.2;
+    // Aligning the radii to match the new mass profiles
+    bodies[0].radius = 1.5;
+    bodies[1].radius = 0.4;
+    bodies[1].drag_coefficient = 0.02; // Very aerodynamic
+
+    bodies[2].radius = 0.8;
+    bodies[2].drag_coefficient = 0.1;
+
+    bodies[3].radius = 2.0;
+    bodies[3].drag_coefficient = 0.8; // High drag, floaty behavior
 
     let restitution = 0.7;
     let world_width = 20.0;
@@ -70,7 +80,7 @@ async fn main() {
 
                 if RigidBody::is_colliding(obj1, obj2) {
                     RigidBody::resolve_penetration(obj1, obj2);
-                    RigidBody::resolve_velocity(obj1, obj2, restitution);
+                    RigidBody::resolve_collision(obj1, obj2, restitution);
                 }
             }
         }
