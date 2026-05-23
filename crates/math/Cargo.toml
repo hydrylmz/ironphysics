@@ -1,0 +1,9 @@
+
+[package]
+name = "physics_math"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# approx for float comparison in tests
+approx = "0.5"

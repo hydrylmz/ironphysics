@@ -4,90 +4,77 @@ pub struct Vec2 {
     pub x: f32,
     pub y: f32,
 }
-
-#[inline]
-pub fn new(x: f32, y: f32) -> Self {
-    Vec2 { x, y }
-}
-
-#[inline]
-pub fn zero() -> Self {
-    Vec2 { x: 0.0, y: 0.0 }
-}
-
-#[inline]
-pub fn splat(v: f32) -> Self {
-    Vec2 { x: v, y: v }
-}
-
-#[inline]
-pub fn dot(self, rhs: Self) -> f32 {
-    self.x * rhs.x + self.y * rhs.y
-}
-
-#[inline]
-pub fn cross(self, rhs: Self) -> f32 {
-    self.x * rhs.y - self.y * rhs.x
-}
-
-#[inline]
-pub fn perp(self) -> Self {
-    Vec2 { x: -self.y, y: self.x }
-}
-
-#[inline]
-pub fn len_sq(self) -> f32 {
-    self.x * self.x + self.y * self.y
-}
-
-#[inline]
-pub fn len(self) -> f32 {
-    self.len_sq().sqrt()
-}
-
-#[inline]
-pub fn normalize(self) -> Self {
-    if self.x == 0.0 && self.y == 0.0 {
-        panic!("Cannot normalize the zero vector");
+impl Vec2 {
+    pub fn new(x: f32, y: f32) -> Self {
+        Vec2 { x, y }
     }
-    let len = self.len();
-    let inv_len = 1.0 / len;
-    Vec2 {
-        x: self.x * inv_len,
-        y: self.y * inv_len,
+
+    pub fn zero() -> Self {
+        Vec2 { x: 0.0, y: 0.0 }
     }
-}
 
-#[inline]
-pub fn normalize_or_zero(self) -> Self {
-    if len_sq(self) < super::scalar::EPSILON {
-        Vec2::zero()
-    } else {
-        self.normalize()
+    pub fn splat(v: f32) -> Self {
+        Vec2 { x: v, y: v }
     }
-}
 
-#[inline]
-pub fn lerp(self, rhs: Self, t: f32) -> Self {
-    Vec2 {
-        x: self.x + t * (rhs.x - self.x),
-        y: self.y + t * (rhs.y - self.y),
+    pub fn dot(self, rhs: Self) -> f32 {
+        self.x * rhs.x + self.y * rhs.y
     }
-}
 
-#[inline]
-pub fn abs(self) -> Self {
-    Vec2 { x: self.x.abs(), y: self.y.abs() }
-}
+    pub fn cross(self, rhs: Self) -> f32 {
+        self.x * rhs.y - self.y * rhs.x
+    }
 
-#[inline]
-pub fn min_comp(self, rhs: Self) -> Self {
-    Vec2 { x: self.x.min(rhs.x), y: self.y.min(rhs.y) }
-}
+    pub fn perp(self) -> Self {
+        Vec2 { x: -self.y, y: self.x }
+    }
 
-#[inline]
-pub fn max_comp(self, rhs: Self) -> Self {
-    Vec2 { x: self.x.max(rhs.x), y: self.y.max(rhs.y) }
+    pub fn len_sq(self) -> f32 {
+        self.x * self.x + self.y * self.y
+    }
+
+    pub fn len(self) -> f32 {
+        self.len_sq().sqrt()
+    }
+
+    pub fn normalize(self) -> Self {
+        if self.x == 0.0 && self.y == 0.0 {
+            panic!("Cannot normalize the zero vector");
+        }
+        let len = self.len();
+        let inv_len = 1.0 / len;
+        Vec2 {
+            x: self.x * inv_len,
+            y: self.y * inv_len,
+        }
+    }
+
+    pub fn normalize_or_zero(self) -> Self {
+        if self.len_sq() < super::scalar::EPSILON {
+            Vec2::zero()
+        } else {
+            self.normalize()
+        }
+    }
+
+    pub fn lerp(self, rhs: Self, t: f32) -> Self {
+        Vec2 {
+            x: self.x + t * (rhs.x - self.x),
+            y: self.y + t * (rhs.y - self.y),
+        }
+    }
+
+    pub fn abs(self) -> Self {
+        Vec2 { x: self.x.abs(), y: self.y.abs() }
+    }
+
+    pub fn min_comp(self, rhs: Self) -> Self {
+        Vec2 { x: self.x.min(rhs.x), y: self.y.min(rhs.y) }
+    }
+
+    pub fn max_comp(self, rhs: Self) -> Self {
+        Vec2 { x: self.x.max(rhs.x), y: self.y.max(rhs.y) }
+    }
 }
 
 impl std::ops::Add for Vec2 {
@@ -161,51 +148,93 @@ impl Default for Vec2 {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
-#[repr(C)]
-pub struct Mat2 {
-    pub cols: [Vec2; 2],
-}
 
-pub fn identity() -> Self {
-    Mat2 {
-        cols: [Vec2::new(1.0, 0.0), Vec2::new(0.0, 1.0)],
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::scalar::EPSILON;
+
+    #[test]
+    fn vec2_add() {
+        let a = Vec2::new(1.0, 2.0);
+        let b = Vec2::new(3.0, 4.0);
+        let c = a + b;
+        assert_eq!(c.x, 4.0);
+        assert_eq!(c.y, 6.0);
     }
-}
 
-pub fn from_angle(theta: f32) -> Self {
-    let c = theta.cos();
-    let s = theta.sin();
-    Mat2 {
-        cols: [Vec2::new(c, s), Vec2::new(-s, c)],
+    #[test]
+    fn vec2_dot_perpendicular() {
+
+        let a = Vec2::new(1.0, 0.0);
+        let b = Vec2::new(0.0, 1.0);
+        let d = a.dot(b);
+        assert_eq!(d, 0.0);
     }
-}
 
-pub fn transpose(self) -> Self {
-    Mat2 {
-        cols: [
-            Vec2::new(self.cols[0].x, self.cols[1].x),
-            Vec2::new(self.cols[0].y, self.cols[1].y),
-        ],
+    #[test]
+    fn vec2_dot_parallel() {
+        let a = Vec2::new(2.0, 0.0);
+        let b = Vec2::new(3.0, 0.0);
+        let d = a.dot(b);
+        assert_eq!(d, 6.0);
     }
-}
 
-pub fn det(self) -> f32 {
-    self.cols[0].x * self.cols[1].y - self.cols[1].x * self.cols[0].y
-}
+    #[test]
+    fn vec2_cross_ccw() {
+        let a = Vec2::new(1.0, 0.0);
+        let b = Vec2::new(0.0, 1.0);
+        let c = a.cross(b);
+        assert_eq!(c, 1.0);
+    }
 
-pub fn mul_vec(self, v: Vec2) -> Vec2 {
-    self.cols[0] * v.x + self.cols[1] * v.y
-}
+    #[test]
+    fn vec2_cross_cw() {
 
-impl std::ops::Mul for Mat2 {
-    type Output = Mat2;
-    fn mul(self, rhs: Mat2) -> Mat2 {
-        Mat2 {
-            cols: [
-                self.mul_vec(rhs.cols[0]),
-                self.mul_vec(rhs.cols[1]),
-            ],
-        }
+        let a = Vec2::new(0.0, 1.0);
+        let b = Vec2::new(1.0, 0.0);
+        let c = a.cross(b);
+        
+        assert_eq!(c, -1.0);
+    }
+
+    #[test]
+    fn vec2_perp_is_unit_for_unit_input() {
+
+        let a = Vec2::new(1.0, 0.0);
+        let p = a.perp();
+        assert_eq!(p, Vec2::new(0.0, 1.0));
+        assert!((p.len() - 1.0).abs() < EPSILON);
+    }
+
+    #[test]
+    fn vec2_normalize_unit_length() {
+
+        let v = Vec2::new(3.0, 4.0);
+        let n = v.normalize();
+        assert!((n.len() - 1.0).abs() < EPSILON);
+        assert!((n.x - 0.6).abs() < EPSILON);
+        assert!((n.y - 0.8).abs() < EPSILON);
+
+    }
+
+    #[test]
+    fn vec2_normalize_or_zero_on_zero_vec() {
+
+        let v = Vec2::zero();
+        let n = v.normalize_or_zero();
+        assert_eq!(n, Vec2::zero());
+
+    }
+
+    #[test]
+    fn vec2_len_sq_matches_len_squared() {
+
+        let v = Vec2::new(3.0, 4.0);
+        assert!((v.len_sq() - v.len() * v.len()).abs() < EPSILON);
+        assert!((v.len_sq() - 25.0).abs() < EPSILON);
+        assert!((v.len() - 5.0).abs() < EPSILON);
+
     }
 }

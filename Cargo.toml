@@ -1,6 +1,17 @@
 [package]
 name = "ironphysics"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+
+[workspace]
+members = [
+    "crates/core",
+    "crates/math",
+]
 
 [dependencies]
+physics_math = { path = "crates/math" }
+physics_core = { path = "crates/core" }
+
+[dev-dependencies]
+approx = "0.5"
