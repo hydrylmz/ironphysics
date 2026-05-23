@@ -1,179 +1,296 @@
-# Mathematics Module (`physics_math`)
+# physics_math
 
-The `physics_math` crate is a self-contained, low-overhead linear algebra library designed specifically for 2D rigid-body simulations. By avoiding heavy, generic math frameworks, it achieves optimal compile times and maximal optimization potential.
-
----
-
-## 1. 2D Vectors (`vec2.rs`)
-
-The core workhorse of geometric calculations is `Vec2`. It is stored as a standard C-compatible structure of two floating-point values:
-
-```rust
-#[derive(Debug, Clone, Copy, PartialEq)]
-#[repr(C)]
-pub struct Vec2 {
-    pub x: f32,
-    pub y: f32,
-}
-```
-
-### Operator Overloads
-`Vec2` implements standard arithmetic operators via `std::ops`, enabling clean mathematical expressions:
-*   **Addition / Subtraction**: `a + b`, `a - b`, `a += b`, `a -= b`
-*   **Scalar Multiplication / Division**: `v * s`, `s * v`, `v / s`, `v *= s`
-*   **Negation**: `-v`
-
-### Vector Operations & Formulas
-
-#### Dot Product
-The dot product computes the scalar projection of one vector onto another:
-$$\vec{a} \cdot \vec{b} = a_x b_x + a_y b_y$$
-```rust
-pub fn dot(self, rhs: Self) -> f32;
-```
-*   **Application**: Used to calculate projection lengths, relative speeds along contact normals, and angle cosines between vectors.
-
-#### Cross Product (2D)
-In 2D, the cross product is a scalar representing the signed magnitude of the 3D cross product perpendicular to the 2D plane:
-$$\vec{a} \times \vec{b} = a_x b_y - a_y b_x$$
-```rust
-pub fn cross(self, rhs: Self) -> f32;
-```
-*   **Application**: Used to check rotational directions (Clockwise vs. Counter-Clockwise), compute perpendicular torques, and resolve angular impulses ($\vec{r} \times \vec{F}$).
-
-#### Perpendicular Vector
-Computes the vector rotated 90 degrees counter-clockwise:
-$$\vec{a}^{\perp} = \begin{bmatrix} -a_y \\ a_x \end{bmatrix}$$
-```rust
-pub fn perp(self) -> Self;
-```
-*   **Application**: Quick perpendicular projection, useful when computing contact tangent directions.
-
-#### Normalization
-Scaling a vector to have a unit length of $1.0$:
-$$\hat{u} = \frac{\vec{u}}{\|\vec{u}\|} = \frac{\vec{u}}{\sqrt{u_x^2 + u_y^2}}$$
-*   `normalize()`: Normalizes the vector, panicking if it is a zero vector.
-*   `normalize_or_zero()`: Safely returns `Vec2::zero()` if the length squared is less than `EPSILON`.
+The `physics_math` namespace contains all 2D linear algebra and geometric primitives used by the Iron Physics engine.
 
 ---
 
-## 2. 2D Matrices (`mat2.rs`)
+## `Vec2`
+**Struct** in `physics_math`
 
-The `Mat2` struct represents a column-major $2 \times 2$ transformation matrix:
+A 2D column vector used for positions, velocities, forces, and spatial directions.
 
-$$\mathbf{A} = \begin{bmatrix} m_{00} & m_{01} \\ m_{10} & m_{11} \end{bmatrix} = \begin{bmatrix} \text{cols}[0].x & \text{cols}[1].x \\ \text{cols}[0].y & \text{cols}[1].y \end{bmatrix}$$
+### Properties
 
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| `x` | `f32` | The X coordinate of the vector. |
+| `y` | `f32` | The Y coordinate of the vector. |
+
+### Constructors
+
+#### `new`
 ```rust
-pub struct Mat2 {
-    pub cols: [Vec2; 2],
-}
+pub fn new(x: f32, y: f32) -> Self
 ```
+Creates a new `Vec2` with the specified `x` and `y` components.
 
-### Key Matrix Formulas
-
-#### Rotation Matrix
-Constructs a rotation matrix around the origin from an angle $\theta$ in radians:
-$$\mathbf{R}(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}$$
+#### `zero`
 ```rust
-pub fn from_angle(theta: f32) -> Self;
+pub fn zero() -> Self
 ```
+Shorthand for `Vec2::new(0.0, 0.0)`.
 
-#### Transposition
-Swaps columns and rows:
-$$\mathbf{A}^T = \begin{bmatrix} a_{00} & a_{10} \\ a_{01} & a_{11} \end{bmatrix}$$
+#### `splat`
 ```rust
-pub fn transpose(self) -> Self;
+pub fn splat(v: f32) -> Self
 ```
-*   **Physics Detail**: For orthonormal rotation matrices, transposition is equivalent to inversion ($\mathbf{R}^T = \mathbf{R}^{-1}$). This provides an extremely cheap $O(1)$ inverse transform step!
+Creates a vector with both `x` and `y` initialized to `v`.
 
-#### Determinant
-Computes the matrix determinant:
-$$\det(\mathbf{A}) = a_{00} a_{11} - a_{01} a_{10}$$
-```rust
-pub fn det(self) -> f32;
-```
+### Public Methods
 
-#### Inversion
-Computes the mathematical inverse of a matrix:
-$$\mathbf{A}^{-1} = \frac{1}{\det(\mathbf{A})} \begin{bmatrix} a_{11} & -a_{01} \\ -a_{10} & a_{00} \end{bmatrix}$$
+#### `dot`
 ```rust
-pub fn inverse(self) -> Option<Self>;
+pub fn dot(self, rhs: Self) -> f32
 ```
-*   Returns `None` if the matrix is singular ($\det(\mathbf{A}) \approx 0$).
+Returns the dot product ($\vec{a} \cdot \vec{b}$) of this vector and `rhs`.
 
-#### Vector Multiplication
-Multiplies a matrix by a column vector:
-$$\mathbf{A}\vec{v} = v_x \cdot \mathbf{A}_{\text{col}0} + v_y \cdot \mathbf{A}_{\text{col}1} = \begin{bmatrix} a_{00} v_x + a_{01} v_y \\ a_{10} v_x + a_{11} v_y \end{bmatrix}$$
+#### `cross`
 ```rust
-pub fn mul_vec(self, v: Vec2) -> Vec2;
+pub fn cross(self, rhs: Self) -> f32
 ```
+Returns the 2D cross product magnitude ($\vec{a} \times \vec{b}$) of this vector and `rhs`.
+
+#### `perp`
+```rust
+pub fn perp(self) -> Self
+```
+Returns the 2D counter-clockwise perpendicular vector (rotated 90 degrees).
+
+#### `len`
+```rust
+pub fn len(self) -> f32
+```
+Returns the magnitude (length) of the vector.
+
+#### `len_sq`
+```rust
+pub fn len_sq(self) -> f32
+```
+Returns the squared magnitude of the vector (faster than `len()` as it avoids the square root).
+
+#### `normalize`
+```rust
+pub fn normalize(self) -> Self
+```
+Returns this vector with a magnitude of 1.0. **Panics** if the vector has a length of zero.
+
+#### `normalize_or_zero`
+```rust
+pub fn normalize_or_zero(self) -> Self
+```
+Returns a normalized vector. If the length is near zero (below `EPSILON`), returns `Vec2::zero()`.
+
+#### `lerp`
+```rust
+pub fn lerp(self, rhs: Self, t: f32) -> Self
+```
+Linearly interpolates between this vector and `rhs` by interpolation factor `t`.
+
+### Operators
+`Vec2` supports standard arithmetic operators:
+*   **Math**: `+`, `-`, `*` (scalar), `/` (scalar), `-` (negate)
+*   **Assignment**: `+=`, `-=`, `*=` (scalar)
 
 ---
 
-## 3. Coordinate Transformations (`transform.rs`)
+## `Mat2`
+**Struct** in `physics_math`
 
-The `Transform` structure acts as a compact pose representation, combining a translation vector and a rotational scalar:
+A column-major $2 \times 2$ transformation matrix used for 2D rotations.
 
+### Properties
+
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| `cols` | `[Vec2; 2]` | Array of 2 column vectors representing the matrix data. |
+
+### Constructors
+
+#### `identity`
 ```rust
-pub struct Transform {
-    pub position: Vec2,
-    pub rotation: f32, // Angle in radians
-}
+pub fn identity() -> Self
 ```
+Returns the Identity matrix.
 
-### Transforming Coordinates
-
-#### Local to World (Forward Apply)
-Transforms a coordinate from a body's local coordinate system into the global world space:
-$$P_{\text{world}} = \mathbf{R}(\theta) \cdot P_{\text{local}} + \vec{x}$$
+#### `from_angle`
 ```rust
-pub fn apply(&self, local_point: Vec2) -> Vec2;
+pub fn from_angle(theta: f32) -> Self
 ```
+Creates a rotation matrix for a given angle `theta` in radians.
 
-#### World to Local (Inverse Apply)
-Transforms a global coordinate back into the body's local space:
-$$P_{\text{local}} = \mathbf{R}(\theta)^T \cdot \left(P_{\text{world}} - \vec{x}\right)$$
-```rust
-pub fn apply_inv(&self, world_point: Vec2) -> Vec2;
-```
+### Public Methods
 
-#### Compounding (Transform Composition)
-Combines two transforms (e.g. parent-to-child composition):
-$$T_{\text{combined}} = T_{\text{parent}} \circ T_{\text{child}}$$
-$$\vec{x}_{\text{new}} = T_{\text{parent}}.\text{apply}(T_{\text{child}}.\vec{x})$$
-$$\theta_{\text{new}} = T_{\text{parent}}.\theta + T_{\text{child}}.\theta$$
+#### `transpose`
 ```rust
-pub fn combine(&self, child: &Transform) -> Transform;
+pub fn transpose(self) -> Self
 ```
+Returns the transposed matrix (columns swapped to rows).
+
+#### `det`
+```rust
+pub fn det(self) -> f32
+```
+Returns the determinant of the matrix.
+
+#### `inverse`
+```rust
+pub fn inverse(self) -> Option<Self>
+```
+Returns the inverted matrix, or `None` if the matrix is singular (determinant is near zero).
+
+#### `mul_vec`
+```rust
+pub fn mul_vec(self, v: Vec2) -> Vec2
+```
+Multiplies the matrix by the given column vector `v`.
 
 ---
 
-## 4. Axis-Aligned Bounding Boxes (`aabb.rs`)
+## `Transform`
+**Struct** in `physics_math`
 
-The `Aabb` struct defines a rectangular boundary aligned with the global coordinate axes, widely used in Broadphase collision detection to quickly prune non-colliding objects:
+A combination of translation and rotation, defining a coordinate frame.
 
+### Properties
+
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| `position` | `Vec2` | The origin point of the coordinate frame in the parent space. |
+| `rotation` | `f32` | The rotation of the coordinate frame in radians. |
+
+### Constructors
+
+#### `identity`
 ```rust
-pub struct Aabb {
-    pub min: Vec2,
-    pub max: Vec2,
-}
+pub fn identity() -> Self
 ```
+Returns a transform with `position = (0,0)` and `rotation = 0.0`.
 
-### AABB Utilities
+#### `new`
+```rust
+pub fn new(position: Vec2, rotation: f32) -> Self
+```
+Creates a new transform from the specified position and rotation.
 
-*   **Overlaps Check**: Determines if two bounding boxes intersect:
-    $$\text{overlaps} \iff (A_{\min.x} \le B_{\max.x} \land B_{\min.x} \le A_{\max.x}) \land (A_{\min.y} \le B_{\max.y} \land B_{\min.y} \le A_{\max.y})$$
-*   **Merge**: Computes the union bounding box that completely encloses both AABBs.
-*   **Fatten**: Expands the AABB boundary uniformly by a safety margin. In collision pipelines, this acts as a cache, preventing rebuilding broadphase structures on tiny micro-movements.
+### Public Methods
+
+#### `rotation_mat`
+```rust
+pub fn rotation_mat(&self) -> Mat2
+```
+Returns the $2 \times 2$ rotation matrix representing this transform's angle.
+
+#### `apply`
+```rust
+pub fn apply(&self, local_point: Vec2) -> Vec2
+```
+Transforms a point from this local space into the parent (world) space.
+
+#### `apply_inv`
+```rust
+pub fn apply_inv(&self, world_point: Vec2) -> Vec2
+```
+Transforms a point from the parent (world) space back into this local space.
+
+#### `combine`
+```rust
+pub fn combine(&self, child: &Transform) -> Transform
+```
+Combines two transformations, effectively computing $T_{\text{self}} \circ T_{\text{child}}$.
 
 ---
 
-## 5. Floating-Point Tolerances (`scalar.rs`)
+## `Aabb`
+**Struct** in `physics_math`
 
-To prevent numerical instabilities in rigid-body joints and contact constraints, the engine implements epsilon-based float checks:
+An Axis-Aligned Bounding Box. Used heavily in broadphase collision culling.
 
-*   `EPSILON = 1e-6`: The default floating-point tolerance limit.
-*   `almost_zero(v: f32) -> bool`: Checks if $|v| < \epsilon$, replacing unsafe `v == 0.0` comparisons.
-*   `almost_equal(a: f32, b: f32) -> bool`: Checks if $|a - b| < \epsilon$.
-*   `wrap_angle(angle: f32) -> f32`: Normalizes any rotation angle to fit into the standard range $[-\pi, \pi]$:
-    $$\theta_{\text{wrapped}} = ((\theta + \pi) \pmod{2\pi}) - \pi$$
+### Properties
+
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| `min` | `Vec2` | The minimum X and Y coordinates (bottom-left). |
+| `max` | `Vec2` | The maximum X and Y coordinates (top-right). |
+
+### Constructors
+
+#### `new`
+```rust
+pub fn new(min: Vec2, max: Vec2) -> Self
+```
+Creates an AABB with the specified min and max bounds.
+
+#### `from_center_half_extents`
+```rust
+pub fn from_center_half_extents(center: Vec2, half: Vec2) -> Self
+```
+Constructs an AABB using a center point and half-size dimensions.
+
+### Public Methods
+
+#### `overlaps`
+```rust
+pub fn overlaps(&self, other: &Aabb) -> bool
+```
+Returns `true` if this bounding box intersects with `other`.
+
+#### `contains_point`
+```rust
+pub fn contains_point(&self, p: Vec2) -> bool
+```
+Returns `true` if the vector `p` lies inside the bounding box.
+
+#### `merge`
+```rust
+pub fn merge(&self, other: &Aabb) -> Aabb
+```
+Returns a new AABB that is the union of this box and `other`.
+
+#### `fatten`
+```rust
+pub fn fatten(&self, margin: f32) -> Aabb
+```
+Expands the bounding box outward by `margin` on all sides.
+
+---
+
+## Scalar Utilities
+
+Global float constants and precision mathematical functions provided by `physics_math`.
+
+| Identifier | Type | Description |
+| :--- | :--- | :--- |
+| `EPSILON` | `f32` | $1 \times 10^{-6}$. The standard floating-point tolerance. |
+| `PI` | `f32` | $\pi \approx 3.14159$ |
+| `DEG_TO_RAD` | `f32` | $\frac{\pi}{180.0}$ |
+| `RAD_TO_DEG` | `f32` | $\frac{180.0}{\pi}$ |
+
+#### `clamp`
+```rust
+pub fn clamp(v: f32, lo: f32, hi: f32) -> f32
+```
+Restricts `v` between `lo` and `hi`.
+
+#### `lerp`
+```rust
+pub fn lerp(a: f32, b: f32, t: f32) -> f32
+```
+Linearly interpolates between `a` and `b`.
+
+#### `almost_zero`
+```rust
+pub fn almost_zero(v: f32) -> bool
+```
+Returns `true` if $|v| < \text{EPSILON}$.
+
+#### `almost_equal`
+```rust
+pub fn almost_equal(a: f32, b: f32) -> bool
+```
+Returns `true` if $|a - b| < \text{EPSILON}$.
+
+#### `wrap_angle`
+```rust
+pub fn wrap_angle(angle: f32) -> f32
+```
+Wraps an angle so that it stays perfectly within the $[-\pi, \pi]$ range.

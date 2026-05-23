@@ -1,177 +1,157 @@
-# Core Module (`physics_core`)
+# physics_core
 
-The `physics_core` crate manages the primary simulation components: memory allocation, data layout, external forces, solver settings, and step integrations.
-
----
-
-## 1. Generational Arena (`arena.rs`)
-
-The `GenerationalArena<T>` is a pre-allocated collection that provides safe, fast, and continuous memory indexing. 
-
-```rust
-pub struct GenerationalArena<T> {
-    entries:   Vec<ArenaEntry<T>>,
-    free_list: Vec<u32>,             
-    len:       usize,                
-}
-
-enum ArenaEntry<T> {
-    Occupied { generation: u32, value: T },
-    Free     { generation: u32 },    
-}
-```
-
-### Allocation & Recycling Pipeline
-
-1.  **Insertion**:
-    *   If `free_list` is not empty, pop a slot index, increment the slot's `generation` wrapping-counter, write the value, and transition to `Occupied`.
-    *   If `free_list` is empty, push a new `Occupied` entry with `generation = 0` at the end of the `entries` vector.
-2.  **Removal**:
-    *   Verify the handle's generation matches the active entry.
-    *   Extract the value, transition to `Free`, increment the `generation` counter again (to immediately invalidate any outstanding handles), and push the slot index onto `free_list`.
-3.  **Lookup**:
-    *   $O(1)$ constant-time lookup by slot index. Checks if the slot is `Occupied` and its generation matches the query handle.
+The `physics_core` namespace contains all components responsible for the rigid-body solver, generational memory allocation, and force integration.
 
 ---
 
-## 2. Opaque Handle Packing (`handle.rs`)
+## `World`
+**Struct** in `physics_core`
 
-The `BodyHandle` is a lightweight token returned to the user upon body creation. It hides the underlying memory layout while ensuring absolute lookup safety.
+The primary coordinator of the physics simulation. Manages bodies, applies forces, and advances the simulation in discrete time steps.
 
+### Properties
+
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| `gravity` | `Vec2` | The global gravity vector applied to all active bodies. Default: `(0.0, -9.81)`. |
+| `config` | `WorldConfig` | The physical limits, iterations, and stabilization settings of the world. |
+
+### Constructors
+
+#### `new`
 ```rust
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct BodyHandle(u64);
+pub fn new(config: WorldConfig) -> Self
 ```
+Initializes a new `World` with the given configuration settings and a pre-allocated capacity for 256 bodies.
 
-### Bit-Packing Mechanics
-The slot index (`u32`) and generation counter (`u32`) are bitwise packed into a single `u64`. This makes handles extremely cheap to copy, compare, and hash:
+### Public Methods
 
+#### `add_body`
 ```rust
-// Packing: Slot occupies lower 32 bits, Generation occupies upper 32 bits
-let value = ((generation as u64) << 32) | (slot as u64);
+pub fn add_body(&mut self, desc: BodyDesc) -> BodyHandle
 ```
+Registers a new rigid body in the physics world using the provided `BodyDesc`. Returns an opaque `BodyHandle` to reference the body later.
 
-To extract coordinates:
-*   **Slot**: `self.0 as u32`
-*   **Generation**: `(self.0 >> 32) as u32`
-*   **Null Handle**: Represented as `u64::MAX`.
+#### `remove_body`
+```rust
+pub fn remove_body(&mut self, handle: BodyHandle)
+```
+De-registers a rigid body, freeing its memory slot for future recycling and incrementing its generation to invalidate old handles.
+
+#### `body`
+```rust
+pub fn body(&self, handle: BodyHandle) -> Option<BodyView<'_>>
+```
+Returns a read-only view (`BodyView`) of the specified body. Returns `None` if the handle is stale or null.
+
+#### `body_mut`
+```rust
+pub fn body_mut(&mut self, handle: BodyHandle) -> Option<BodyViewMut<'_>>
+```
+Returns a mutable view (`BodyViewMut`) of the specified body. Returns `None` if the handle is stale or null.
+
+#### `step`
+```rust
+pub fn step(&mut self, dt: f32)
+```
+Advances the physics simulation by `dt` seconds (Delta Time). This executes Symplectic Euler integrations, collision responses, and updates all active transforms.
+
+#### `apply_force`
+```rust
+pub fn apply_force(&mut self, handle: BodyHandle, force: Vec2)
+```
+Applies a continuous linear force to the body's center of mass. Awakens the body if sleeping.
+
+#### `apply_force_at_point`
+```rust
+pub fn apply_force_at_point(&mut self, handle: BodyHandle, force: Vec2, world_point: Vec2)
+```
+Applies a force at an offset `world_point`, computing and applying both the linear force and the resulting angular torque.
+
+#### `apply_impulse`
+```rust
+pub fn apply_impulse(&mut self, handle: BodyHandle, impulse: Vec2)
+```
+Applies an instantaneous velocity change (impulse) to the body.
+
+#### `apply_torque`
+```rust
+pub fn apply_torque(&mut self, handle: BodyHandle, torque: f32)
+```
+Applies a continuous angular torque to the body.
 
 ---
 
-## 3. Data-Oriented Body Storage (`body.rs`)
+## `BodyDesc`
+**Struct** in `physics_core`
 
-`BodyStorage` stores all rigid body variables in a cache-friendly Struct-of-Arrays (SoA) layout.
+A configuration blueprint used when spawning a new body via `World::add_body()`.
 
-```rust
-pub struct BodyStorage {
-    pub position:          Vec<Vec2>,    
-    pub linear_velocity:   Vec<Vec2>,    
-    pub angle:             Vec<f32>,     
-    pub angular_velocity:  Vec<f32>,     
-    pub force:             Vec<Vec2>,    
-    pub torque:            Vec<f32>,     
-    pub inv_mass:          Vec<f32>,     
-    pub inv_inertia:       Vec<f32>,    
-    pub transform:         Vec<Transform>,  
-    pub aabb:              Vec<Aabb>,        
-    pub body_type:         Vec<BodyType>,
-    pub gravity_scale:     Vec<f32>,
-    pub linear_damping:    Vec<f32>,
-    pub angular_damping:   Vec<f32>,
-    pub is_awake:          Vec<bool>,
-    pub fixed_rotation:    Vec<bool>,
-    pub user_data:         Vec<Option<u64>>,
-    pub generation:        Vec<u32>,      
-    pub len:               usize,
-}
-```
+### Properties
 
-### Rigid Body Classifications (`BodyType`)
-*   **`Static`**: Stationary bodies (e.g. ground, walls). Mass and inertia are treated as infinite ($\text{inv\_mass} = 0.0$, $\text{inv\_inertia} = 0.0$). They do not move in response to gravity, forces, or impulses.
-*   **`Kinematic`**: Bodies animated via scripts or direct velocity. Like static bodies, they have infinite mass. However, they integrate velocity to update position.
-*   **`Dynamic`**: Fully simulated bodies. They respond to gravity, dampings, collisions, user-applied forces, and impulses.
-
-### Direct Borrow Views (`BodyView` & `BodyViewMut`)
-To keep the API ergonomic while retaining SoA memory speed, the engine provides aggregated reference wrappers. This allows you to inspect or modify a body using a clean struct interface:
-
-```rust
-// Ergonomic view wrapper returned by world.body(handle)
-pub struct BodyView<'a> {
-    pub position: &'a Vec2,
-    pub linear_velocity: &'a Vec2,
-    pub angle: &'a f32,
-    pub angular_velocity: &'a f32,
-    pub force: &'a Vec2,
-    pub torque: &'a f32,
-    pub inv_mass: &'a f32,
-    pub inv_inertia: &'a f32,
-    pub transform: &'a Transform,
-    pub aabb: &'a Aabb,
-    pub body_type: &'a BodyType,
-    pub gravity_scale: &'a f32,
-    pub is_awake: &'a bool,
-    pub user_data: &'a Option<u64>,
-}
-```
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| `body_type` | `BodyType` | Specifies if the body is `Static`, `Kinematic`, or `Dynamic`. |
+| `position` | `Vec2` | The starting position. |
+| `linear_velocity` | `Vec2` | The starting linear velocity. |
+| `angle` | `f32` | The starting rotation (radians). |
+| `angular_velocity` | `f32` | The starting angular velocity. |
+| `inv_mass` | `f32` | The inverse of the mass. A value of $0.0$ signifies infinite mass. |
+| `inv_inertia` | `f32` | The inverse of the inertia. A value of $0.0$ signifies infinite rotational inertia. |
+| `gravity_scale` | `f32` | A multiplier for the world's gravity (e.g., $0.0$ disables gravity for this body). |
+| `linear_damping` | `f32` | Air resistance factor applied to linear velocity per step. |
+| `angular_damping` | `f32` | Resistance factor applied to angular velocity per step. |
+| `is_awake` | `bool` | Whether the body is initially participating in the simulation solver. |
+| `fixed_rotation` | `bool` | If `true`, the body cannot be rotated by forces (forces `inv_inertia` to 0.0 internally). |
+| `user_data` | `Option<u64>` | A custom field for linking this body to your external game entities. |
 
 ---
 
-## 4. Solver Settings (`config.rs`)
+## `BodyType`
+**Enum** in `physics_core`
 
-The `WorldConfig` structure stores physical parameters and solver thresholds for the integration pipeline:
+Categorizes a rigid body's interaction with the simulation.
 
-| Parameter | Type | Default | Description |
+| Enum Value | Description |
+| :--- | :--- |
+| `Static` | Immovable geometry (e.g. walls, floors). Has infinite mass and does not move. |
+| `Kinematic` | Unaffected by forces and collisions, but moves according to its `linear_velocity` (e.g. moving platforms). |
+| `Dynamic` | A fully simulated body that reacts to gravity, impulses, and collisions. |
+
+---
+
+## `WorldConfig`
+**Struct** in `physics_core`
+
+Global configuration thresholds for the `World` solver.
+
+| Name | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `velocity_iterations` | `u32` | `8` | Number of solver iterations resolving velocity constraints. |
-| `position_iterations` | `u32` | `3` | Number of solver iterations resolving overlapping positions. |
-| `warm_starting_factor` | `f32` | `0.9` | Ratio of accumulated impulses carried over to the next step. |
-| `linear_slop` | `f32` | `0.005` | Penetration threshold below which position correction is skipped. |
-| `baumgarte_factor` | `f32` | `0.2` | Position correction factor to resolve overlaps gently. |
-| `restitution_threshold` | `f32` | `1.0` | Velocity threshold below which elastic collisions become inelastic. |
-| `allow_sleeping` | `bool` | `true` | Enables sleeping to put idle bodies to rest, saving CPU cycles. |
-| `sleep_time_required` | `f32` | `0.5` | Seconds of continuous immobility required to trigger sleep. |
+| `velocity_iterations` | `u32` | `8` | Number of iterations used to resolve velocity constraints. |
+| `position_iterations` | `u32` | `3` | Number of iterations used to resolve position constraints (overlaps). |
+| `warm_starting_factor` | `f32` | `0.9` | Ratio of accumulated impulses carried between frames. |
+| `allow_sleeping` | `bool` | `true` | Allows bodies to freeze computations when inactive. |
+| `sleep_time_required` | `f32` | `0.5` | Required continuous seconds of inactivity before sleeping. |
+| `linear_slop` | `f32` | `0.005` | Margin of penetration ignored by the position solver. |
+| `baumgarte_factor` | `f32` | `0.2` | Intensity ratio for correcting body overlaps over time. |
 
 ---
 
-## 5. Main Simulation Coordinator (`world.rs`)
+## `BodyHandle`
+**Struct** in `physics_core`
 
-`World` is the central engine class, orchestrating the rigid bodies, gravity, sleeping states, and time integration step.
+An opaque $64$-bit token returned upon body creation. It packs a 32-bit slot index and a 32-bit generation counter.
 
+### Public Methods
+
+#### `is_valid`
 ```rust
-pub struct World {
-    pub gravity:        Vec2,
-    pub config:         WorldConfig,
-    bodies:             BodyStorage,
-    body_arena:         GenerationalArena<()>, 
-    step_count:         u64,
-}
+pub fn is_valid(&self) -> bool
 ```
+Returns `true` if this handle does not match the null representation.
 
-### Physics Step Loop (`World::step`)
-When `world.step(dt)` is called, it performs:
-
-1.  **DOD Contiguous Filtering**: Skips static, sleeping, or inactive slots.
-2.  **External Accelerations**: Adds gravity to active force buffers:
-    $$\vec{F}_{\text{total}} \gets \vec{F}_{\text{accumulated}} + \vec{g} \cdot s_{\text{gravity}} \cdot m$$
-3.  **Euler semi-implicit integration**:
-    $$\vec{v} \gets \vec{v} + \vec{a} \cdot \Delta t$$
-    $$\vec{x} \gets \vec{x} + \vec{v} \cdot \Delta t$$
-4.  **Damping**: Multiplies velocities by linear/angular damping factors.
-5.  **Accumulator Cleanup**: Clears force and torque arrays back to zero.
-6.  **Transform Sync**: Updates the cached positional `Transform` structures to optimize collision detection.
-
-### User Physics APIs
-
+#### `null`
 ```rust
-// Force Application (Accumulates over the step, wakes up sleeping bodies)
-pub fn apply_force(&mut self, handle: BodyHandle, force: Vec2);
-
-// Direct Impulse Application (Immediately updates linear velocity)
-pub fn apply_impulse(&mut self, handle: BodyHandle, impulse: Vec2);
-
-// Angular Torque (Wakes body up and adds rotational force)
-pub fn apply_torque(&mut self, handle: BodyHandle, torque: f32);
-
-// Force at offset point (Applies linear force and computes corresponding torque)
-pub fn apply_force_at_point(&mut self, handle: BodyHandle, force: Vec2, world_point: Vec2);
+pub fn null() -> Self
 ```
+Returns a safely invalid handle.

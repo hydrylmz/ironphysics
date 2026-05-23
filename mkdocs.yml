@@ -1,4 +1,4 @@
-site_name: Iron Physics
+site_name: Iron Physics Scripting API
 site_url: https://hydrylmz.github.io/ironphysics/
 repo_url: https://github.com/hydrylmz/ironphysics
 repo_name: hydrylmz/ironphysics
@@ -27,6 +27,7 @@ theme:
     - search.suggest
     - search.highlight
     - content.code.copy
+    - toc.integrate
 
 markdown_extensions:
   - admonition
@@ -43,14 +44,13 @@ markdown_extensions:
       generic: true
   - pymdownx.tabbed:
       alternate_style: true
+  - def_list
 
 extra_javascript:
   - javascripts/mathjax.js
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 nav:
-  - Introduction: index.md
-  - Architecture: architecture.md
-  - Math Module: math.md
-  - Core Module: core.md
-  - Usage Guide: usage.md
+  - API Home: index.md
+  - physics_math: math.md
+  - physics_core: core.md
