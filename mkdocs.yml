@@ -1,0 +1,12 @@
+site_name: Iron Physics
+site_url: https://github.com/hydrylmz/ironphysics
+
+theme:
+  name: material 
+  palette:
+    scheme: slate 
+    primary: red 
+    
+nav:
+  - Giriş: index.md
+  - Mimari: architecture.md
