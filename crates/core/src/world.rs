@@ -384,7 +384,7 @@ mod tests {
             linear_damping: 1.0,
             angular_damping: 0.0,
             is_awake: true,
-            fixed_rotation: false,
+            fixed_rotation: false, 
             user_data: None,
         };
         let handle = world.add_body(body_desc);
