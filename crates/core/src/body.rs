@@ -112,98 +112,72 @@ impl BodyStorage {
     }
 
     pub fn push(&mut self, desc: &BodyDesc, mass_props: MassProperties) -> u32 {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    self.position.push(desc.position);
-    self.linear_velocity.push(desc.linear_velocity);
-    self.angle.push(desc.angle);
-    self.angular_velocity.push(desc.angular_velocity);
-    self.force.push(Vec2::zero());
-    self.torque.push(0.0);
-    match desc.body_type {
-        BodyType::Static => {
-            self.inv_mass.push(0.0);
-            self.inv_inertia.push(0.0);
+        self.position.push(desc.position);
+        self.linear_velocity.push(desc.linear_velocity);
+        self.angle.push(desc.angle);
+        self.angular_velocity.push(desc.angular_velocity);
+        self.force.push(Vec2::zero());
+        self.torque.push(0.0);
+        match desc.body_type {
+            BodyType::Static => {
+                self.inv_mass.push(0.0);
+                self.inv_inertia.push(0.0);
+            }
+            BodyType::Kinematic => {
+                self.inv_mass.push(0.0);
+                self.inv_inertia.push(0.0);
+            }
+            BodyType::Dynamic => {
+                self.inv_mass.push(1.0 / mass_props.mass);
+                self.inv_inertia.push(if desc.fixed_rotation {
+                    0.0
+                } else {
+                    1.0 / mass_props.inertia
+                });
+            }
         }
-        BodyType::Kinematic => {
-            self.inv_mass.push(0.0);
-            self.inv_inertia.push(0.0);
-        }
-        BodyType::Dynamic => {
-            self.inv_mass.push(1.0 / mass_props.mass);
-            self.inv_inertia.push(if desc.fixed_rotation {
-                0.0
-            } else {
-                1.0 / mass_props.inertia
-            });
-        }
-    }
-    self.transform.push(Transform::new(desc.position, desc.angle));
-    self.aabb.push(Aabb::new(Vec2::zero(), Vec2::zero()));
-    self.body_type.push(desc.body_type);
-    self.gravity_scale.push(desc.gravity_scale);
-    self.linear_damping.push(desc.linear_damping);
-    self.angular_damping.push(desc.angular_damping);
-    self.is_awake.push(true);
-    self.fixed_rotation.push(desc.fixed_rotation);
-    self.user_data.push(desc.user_data);
-    self.generation.push(0);
-    let slot = self.len as u32;
-    self.len += 1;
-    debug_assert_eq!(self.position.len(), self.linear_velocity.len());
-    debug_assert_eq!(self.position.len(), self.angle.len());
-    debug_assert_eq!(self.position.len(), self.angular_velocity.len());
-    debug_assert_eq!(self.position.len(), self.force.len());
-    debug_assert_eq!(self.position.len(), self.torque.len());
-    debug_assert_eq!(self.position.len(), self.inv_mass.len());
-    debug_assert_eq!(self.position.len(), self.inv_inertia.len());
-    return slot;
-
+        self.transform.push(Transform::new(desc.position, desc.angle));
+        self.aabb.push(Aabb::new(Vec2::zero(), Vec2::zero()));
+        self.body_type.push(desc.body_type);
+        self.gravity_scale.push(desc.gravity_scale);
+        self.linear_damping.push(desc.linear_damping);
+        self.angular_damping.push(desc.angular_damping);
+        self.is_awake.push(true);
+        self.fixed_rotation.push(desc.fixed_rotation);
+        self.user_data.push(desc.user_data);
+        self.generation.push(0);
+        let slot = self.len as u32;
+        self.len += 1;
+        debug_assert_eq!(self.position.len(), self.linear_velocity.len());
+        debug_assert_eq!(self.position.len(), self.angle.len());
+        debug_assert_eq!(self.position.len(), self.angular_velocity.len());
+        debug_assert_eq!(self.position.len(), self.force.len());
+        debug_assert_eq!(self.position.len(), self.torque.len());
+        debug_assert_eq!(self.position.len(), self.inv_mass.len());
+        debug_assert_eq!(self.position.len(), self.inv_inertia.len());
+        slot
     }
 
-    pub fn len(&self) -> usize { self.len }
+    pub fn len(&self) -> usize {
+        self.len
+    }
 
-    pub fn is_active(&self, idx: usize) -> bool { idx < self.len }
+    pub fn is_empty(&self) -> bool {
+        self.len == 0
+    }
+
+    pub fn is_active(&self, idx: usize) -> bool {
+        idx < self.len
+    }
 
     pub fn sync_transform(&mut self, slot: usize) {
         self.transform[slot] = Transform::new(self.position[slot], self.angle[slot]);
+    }
+}
+
+impl Default for BodyStorage {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

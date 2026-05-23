@@ -29,7 +29,6 @@ impl<T> GenerationalArena<T> {
     pub fn insert(&mut self, value: T) -> (u32, u32) {
         self.len += 1;
 
-
         if let Some(slot_index) = self.free_list.pop() {
             let idx = slot_index as usize;
             
@@ -138,13 +137,16 @@ impl<T> GenerationalArena<T> {
     }
 }
 
+impl<T> Default for GenerationalArena<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
     fn arena_insert_and_get() {
-
-
-
 
         let mut arena = super::GenerationalArena::new();
         let (slot, gen) = arena.insert(42u32);
@@ -156,9 +158,6 @@ mod tests {
     #[test]
     fn arena_remove_then_get_returns_none() {
 
-
-
-
         let mut arena = super::GenerationalArena::new();
         let (slot, gen) = arena.insert(99);
         arena.remove(slot, gen);
@@ -169,12 +168,6 @@ mod tests {
 
     #[test]
     fn arena_stale_handle_rejected() {
-
-
-
-
-
-
 
         let mut arena = super::GenerationalArena::new();
         let (slot, gen0) = arena.insert("first");
@@ -188,10 +181,6 @@ mod tests {
 
     #[test]
     fn arena_iter_skips_free_slots() {
-
-
-
-
 
         let mut arena = super::GenerationalArena::new();
         let (_s0, _g0) = arena.insert("A");
