@@ -1,4 +1,4 @@
-use crate::{Vec2, BodyHandle, WorldConfig, GenerationalArena, BodyStorage};
+use crate::{Vec2, BodyHandle, WorldConfig, GenerationalArena, BodyStorage, Transform};
 use crate::body::{BodyDesc, BodyType, MassProperties, BodyView, BodyViewMut};
 
 pub struct World {
@@ -9,6 +9,13 @@ pub struct World {
     body_arena:         GenerationalArena<()>, 
 
     step_count:         u64,
+
+    // TODO: Collision integration
+    // colliders:    ColliderStorage,
+    // broadphase:   DynamicAabbTree,
+    // contact_pool: ContactPool,
+    // prev_pool:    ContactPool,
+    // collider_arena: GenerationalArena<()>,
 }
 impl World {
     pub fn new(config: WorldConfig) -> Self {
@@ -18,6 +25,7 @@ impl World {
             bodies: BodyStorage::with_capacity(256),
             body_arena: GenerationalArena::with_capacity(256),
             step_count: 0,
+            // TODO: Initialize collision components
         }
     }
 
@@ -30,177 +38,112 @@ impl World {
     }
 
     pub fn remove_body(&mut self, handle: BodyHandle) {
-    self.body_arena.remove(handle.slot(), handle.generation());
-    let slot = handle.slot() as usize;
-    if slot < self.bodies.len {
-        self.bodies.is_awake[slot] = false;
-        self.bodies.body_type[slot] = BodyType::Static;
-        self.bodies.generation[slot] = handle.generation().wrapping_add(1);
-    }
+        self.body_arena.remove(handle.slot(), handle.generation());
+        let slot = handle.slot() as usize;
+        if slot < self.bodies.len {
+            self.bodies.is_awake[slot] = false;
+            self.bodies.body_type[slot] = BodyType::Static;
+            self.bodies.generation[slot] = handle.generation().wrapping_add(1);
+        }
     }
 
     pub fn body(&self, handle: BodyHandle) -> Option<BodyView<'_>> {
         self.body_arena.get(handle.slot(), handle.generation()).map(|_| {
-        let slot = handle.slot() as usize;
-        BodyView {
-            position: &self.bodies.position[slot],
-            linear_velocity: &self.bodies.linear_velocity[slot],
-            angle: &self.bodies.angle[slot],
-            angular_velocity: &self.bodies.angular_velocity[slot],
-            force: &self.bodies.force[slot],
-            torque: &self.bodies.torque[slot],
-            inv_mass: &self.bodies.inv_mass[slot],
-            inv_inertia: &self.bodies.inv_inertia[slot],
+            let slot = handle.slot() as usize;
+            BodyView {
+                position: &self.bodies.position[slot],
+                linear_velocity: &self.bodies.linear_velocity[slot],
+                angle: &self.bodies.angle[slot],
+                angular_velocity: &self.bodies.angular_velocity[slot],
+                force: &self.bodies.force[slot],
+                torque: &self.bodies.torque[slot],
+                inv_mass: &self.bodies.inv_mass[slot],
+                inv_inertia: &self.bodies.inv_inertia[slot],
 
-            transform: &self.bodies.transform[slot],
-            aabb: &self.bodies.aabb[slot],
+                transform: &self.bodies.transform[slot],
+                aabb: &self.bodies.aabb[slot],
 
-            body_type: &self.bodies.body_type[slot],
-            gravity_scale: &self.bodies.gravity_scale[slot],
-            linear_damping: &self.bodies.linear_damping[slot],
-            angular_damping: &self.bodies.angular_damping[slot],
-            is_awake: &self.bodies.is_awake[slot],
-            fixed_rotation: &self.bodies.fixed_rotation[slot],
-            user_data: &self.bodies.user_data[slot],
-        }
-    })
+                body_type: &self.bodies.body_type[slot],
+                gravity_scale: &self.bodies.gravity_scale[slot],
+                linear_damping: &self.bodies.linear_damping[slot],
+                angular_damping: &self.bodies.angular_damping[slot],
+                is_awake: &self.bodies.is_awake[slot],
+                fixed_rotation: &self.bodies.fixed_rotation[slot],
+                user_data: &self.bodies.user_data[slot],
+            }
+        })
     }
 
     pub fn body_mut(&mut self, handle: BodyHandle) -> Option<BodyViewMut<'_>> {
         self.body_arena.get(handle.slot(), handle.generation()).map(|_| {
-        let slot = handle.slot() as usize;
-        BodyViewMut {
-            position: &mut self.bodies.position[slot],
-            linear_velocity: &mut self.bodies.linear_velocity[slot],
-            angle: &mut self.bodies.angle[slot],
-            angular_velocity: &mut self.bodies.angular_velocity[slot],
-            force: &mut self.bodies.force[slot],
-            torque: &mut self.bodies.torque[slot],
-            inv_mass: &mut self.bodies.inv_mass[slot],
-            inv_inertia: &mut self.bodies.inv_inertia[slot],
+            let slot = handle.slot() as usize;
+            BodyViewMut {
+                position: &mut self.bodies.position[slot],
+                linear_velocity: &mut self.bodies.linear_velocity[slot],
+                angle: &mut self.bodies.angle[slot],
+                angular_velocity: &mut self.bodies.angular_velocity[slot],
+                force: &mut self.bodies.force[slot],
+                torque: &mut self.bodies.torque[slot],
+                inv_mass: &mut self.bodies.inv_mass[slot],
+                inv_inertia: &mut self.bodies.inv_inertia[slot],
 
-            transform: &mut self.bodies.transform[slot],
-            aabb: &mut self.bodies.aabb[slot],
+                transform: &mut self.bodies.transform[slot],
+                aabb: &mut self.bodies.aabb[slot],
 
-            body_type: &mut self.bodies.body_type[slot],
-            gravity_scale: &mut self.bodies.gravity_scale[slot],
-            linear_damping: &mut self.bodies.linear_damping[slot],
-            angular_damping: &mut self.bodies.angular_damping[slot],
-            is_awake: &mut self.bodies.is_awake[slot],
-            fixed_rotation: &mut self.bodies.fixed_rotation[slot],
-            user_data: &mut self.bodies.user_data[slot],
-        }
-    })
+                body_type: &mut self.bodies.body_type[slot],
+                gravity_scale: &mut self.bodies.gravity_scale[slot],
+                linear_damping: &mut self.bodies.linear_damping[slot],
+                angular_damping: &mut self.bodies.angular_damping[slot],
+                is_awake: &mut self.bodies.is_awake[slot],
+                fixed_rotation: &mut self.bodies.fixed_rotation[slot],
+                user_data: &mut self.bodies.user_data[slot],
+            }
+        })
     }
 
     pub fn step(&mut self, dt: f32) {
         if dt <= 0.0 {
             return;
         }
-
-        let bodies = &mut self.bodies;
-    let num_bodies = bodies.len();
-    for i in 0..num_bodies {
-            if !bodies.is_active(i) || !bodies.is_awake[i] || bodies.inv_mass[i] == 0.0 {
-                continue;
+        // STEP 1 — APPLY FORCES & INTEGRATE VELOCITIES
+        for i in 0..self.bodies.len {
+            if self.bodies.is_awake[i] && self.bodies.body_type[i] == BodyType::Dynamic {
+                let gravity = self.gravity * self.bodies.gravity_scale[i];
+                let total_force = self.bodies.force[i] + gravity * (1.0 / self.bodies.inv_mass[i]);
+                let total_torque = self.bodies.torque[i];
+                self.bodies.linear_velocity[i] += total_force * self.bodies.inv_mass[i] * dt;
+                self.bodies.angular_velocity[i] += total_torque * self.bodies.inv_inertia[i] * dt;
+                self.bodies.linear_velocity[i] = self.bodies.linear_velocity[i] * (1.0 / (1.0 + dt * self.bodies.linear_damping[i]));
+                self.bodies.angular_velocity[i] *= 1.0 / (1.0 + dt * self.bodies.angular_damping[i]);
             }
-
-            let mass = 1.0 / bodies.inv_mass[i];
-            let gravity_force = self.gravity * bodies.gravity_scale[i] * mass;
-            bodies.force[i] += gravity_force;
-
-            let linear_accel = bodies.force[i] * bodies.inv_mass[i];
-            bodies.linear_velocity[i] += linear_accel * dt;
-
-            let angular_accel = bodies.torque[i] * bodies.inv_inertia[i];
-            bodies.angular_velocity[i] += angular_accel * dt;
-
-            let damping_factor = (1.0 - bodies.linear_damping[i] * dt).max(0.0_f32);
-            bodies.linear_velocity[i] *= damping_factor;
-
-            let ang_damp_factor = (1.0 - bodies.angular_damping[i] * dt).max(0.0_f32);
-            bodies.angular_velocity[i] *= ang_damp_factor;
-
-            bodies.position[i] += bodies.linear_velocity[i] * dt;
-            bodies.angle[i] += bodies.angular_velocity[i] * dt;
-        }
-
-    for i in 0..num_bodies {
-            if !bodies.is_active(i) {
-                continue;
+        }   
+        // STEP 2 — INTEGRATE POSITIONS
+        for i in 0..self.bodies.len {
+            if self.bodies.is_awake[i] && self.bodies.body_type[i] == BodyType::Dynamic {
+                self.bodies.position[i] += self.bodies.linear_velocity[i] * dt;
+                self.bodies.angle[i] += self.bodies.angular_velocity[i] * dt;
             }
-
-            bodies.force[i] = Vec2::zero();
-            bodies.torque[i] = 0.0;
-
-            bodies.sync_transform(i);
-    }
-
-    self.step_count += 1;
-    }
-
-    pub fn apply_force(&mut self, handle: BodyHandle, force: Vec2) {
-    if !handle.is_valid() {
-        return;
-    }
-
-    let slot = handle.slot() as usize;
-    let bodies = &mut self.bodies;
-
-    if !bodies.is_active(slot) || bodies.generation[slot] != handle.generation() {
-        return;
-    }
-
-    if bodies.inv_mass[slot] == 0.0 {
-        return;
-    }
-
-    bodies.force[slot] += force;
-
-    bodies.is_awake[slot] = true;
-    }
-
-    pub fn apply_force_at_point(&mut self, handle: BodyHandle, force: Vec2, world_point: Vec2) {
-    if !handle.is_valid() {
-        return;
-    }
-
-    let r = world_point - self.bodies.position[handle.slot() as usize];
-    self.bodies.force[handle.slot() as usize] += force;
-    let torque = r.cross(force);
-    self.bodies.torque[handle.slot() as usize] += torque;
-    }
-
-    pub fn apply_impulse(&mut self, handle: BodyHandle, impulse: Vec2) {
-    if !handle.is_valid() {
-        return;
-    }
-
-    if let Some(body) = self.body_mut(handle) {
-        if *body.inv_mass == 0.0 {
-            return;
+        }
+        // STEP 3 — CLEAR FORCE ACCUMULATORS
+        for i in 0..self.bodies.len {
+            self.bodies.force[i] = Vec2::zero();
+            self.bodies.torque[i] = 0.0;
         }
 
-        *body.linear_velocity += impulse * *body.inv_mass;
-        *body.is_awake = true;
-    }
-    }
+        // TODO: STEP 4 — UPDATE COLLIDER WORLD TRANSFORMS
+        // STEP 5 — BROADPHASE UPDATE  
+        // STEP 6 — FILTER PAIRS
+        // STEP 7 — NARROWPHASE
+        // STEP 8 — SYNC TRANSFORMS
+        // STEP 9 — INCREMENT STEP COUNTER
 
-    pub fn apply_torque(&mut self, handle: BodyHandle, torque: f32) {
-    if !handle.is_valid() {
-        return;
-    }
-
-    if let Some(body) = self.body_mut(handle) {
-        if *body.inv_mass == 0.0 {
-            return;
+        // STEP 8 — SYNC TRANSFORMS (moved here for now)
+        for i in 0..self.bodies.len {
+            self.bodies.transform[i] = Transform::new(self.bodies.position[i], self.bodies.angle[i]);
         }
-
-        *body.torque += torque;
-        *body.is_awake = true;
+        // STEP 9 — INCREMENT STEP COUNTER
+        self.step_count += 1;
     }
-}
-
 }
 
 #[cfg(test)]
@@ -307,34 +250,6 @@ mod tests {
     }
 
     #[test]
-    fn applied_force_accelerates_body() {
-
-        let mut world = World::new(WorldConfig::default());
-        let body_desc = BodyDesc {
-            body_type: BodyType::Dynamic,
-            position: Vec2::zero(),
-            linear_velocity: Vec2::zero(),
-            angle: 0.0,
-            angular_velocity: 0.0,
-            force: Vec2::zero(),
-            torque: 0.0,
-            inv_mass: 1.0,
-            inv_inertia: 1.0,
-            transform: Transform::default(),
-            aabb: Aabb::default(),
-            gravity_scale: 0.0,
-            linear_damping: 0.0,
-            angular_damping: 0.0,
-            is_awake: true,
-            fixed_rotation: false,
-            user_data: None,
-        };
-        let handle = world.add_body(body_desc);
-        let force = Vec2::new(10.0, 0.0);
-        world.apply_force(handle, force);
-    }
-
-    #[test]
     fn stale_handle_returns_none() {
 
         let mut world = World::new(WorldConfig::default());
@@ -395,4 +310,4 @@ mod tests {
         assert!(body.linear_velocity.x >= 0.0);
         
     }
-    }
+}

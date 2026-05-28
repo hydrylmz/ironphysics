@@ -32,3 +32,9 @@ impl BodyHandle {
         BodyHandle(u64::MAX)
     }
 }
+
+impl Default for BodyHandle {
+    fn default() -> Self {
+        Self::null()
+    }
+}

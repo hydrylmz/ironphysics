@@ -36,6 +36,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "physics_collision"
+version = "0.1.0"
+dependencies = [
+ "approx",
+ "physics_core",
+ "physics_math",
+ "smallvec",
+]
+
+[[package]]
 name = "physics_core"
 version = "0.1.0"
 dependencies = [
@@ -48,3 +58,9 @@ version = "0.1.0"
 dependencies = [
  "approx",
 ]
+
+[[package]]
+name = "smallvec"
+version = "1.15.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "67b1b7a3b5fe4f1376887184045fcf45c69e92af734b7aaddc05fb777b6fbd03"

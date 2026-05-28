@@ -2,5 +2,8 @@
   "dependencies": {
     "@types/papaparse": "^5.5.2",
     "papaparse": "^5.5.3"
+  },
+  "devDependencies": {
+    "electron-builder": "^26.8.1"
   }
 }

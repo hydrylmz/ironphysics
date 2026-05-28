@@ -1,0 +1,21 @@
+`if` may be missing an `else` clause at crates\collision\src\narrowphase\analytic.rs:56
+arguments to this function are incorrect at crates\collision\src\narrowphase\dispatch.rs:20
+arguments to this function are incorrect at crates\collision\src\narrowphase\dispatch.rs:21
+arguments to this function are incorrect at crates\collision\src\narrowphase\dispatch.rs:24
+binary assignment operation `/=` cannot be applied to type `Vec2` at crates\collision\src\shape\convex_polygon.rs:86
+cannot borrow `self.nodes` as immutable because it is also borrowed as mutable at crates\collision\src\broadphase\bvh.rs:91
+mismatched types at crates\collision\src\narrowphase\gjk.rs:15
+mismatched types at crates\collision\src\narrowphase\sat.rs:10
+mismatched types at crates\collision\src\pool.rs:15
+mismatched types at crates\collision\src\pool.rs:17
+mismatched types at crates\collision\src\pool.rs:18
+no function or associated item named `default` found for struct `BodyHandle` in the current scope at crates\collision\src\narrowphase\analytic.rs:38
+no function or associated item named `default` found for struct `BodyHandle` in the current scope at crates\collision\src\narrowphase\analytic.rs:39
+no function or associated item named `default` found for struct `BodyHandle` in the current scope at crates\collision\src\narrowphase\epa.rs:70
+no function or associated item named `default` found for struct `BodyHandle` in the current scope at crates\collision\src\narrowphase\epa.rs:71
+no function or associated item named `empty` found for struct `Aabb` in the current scope at crates\collision\src\broadphase\bvh.rs:48
+no method named `abs` found for struct `Mat2` in the current scope at crates\collision\src\shape\box_shape.rs:45
+struct `Simplex` is private at crates\collision\src\narrowphase\epa.rs:7
+the method `clamp` exists for struct `Vec2`, but its trait bounds were not satisfied at crates\collision\src\narrowphase\analytic.rs:52
+type annotations needed for `&_` at crates\collision\src\narrowphase\sat.rs:104
+unresolved import `crate::BodyHandle` at crates\collision\src\narrowphase\sat.rs:2

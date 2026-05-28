@@ -1,0 +1,202 @@
+cannot find function `circle_vs_box` in this scope at crates\collision\src\narrowphase\analytic.rs:176
+cannot find function `circle_vs_box` in this scope at crates\collision\src\narrowphase\analytic.rs:192
+cannot find function `circle_vs_box` in this scope at crates\collision\src\narrowphase\analytic.rs:207
+cannot find function `circle_vs_circle` in this scope at crates\collision\src\narrowphase\analytic.rs:110
+cannot find function `circle_vs_circle` in this scope at crates\collision\src\narrowphase\analytic.rs:127
+cannot find function `circle_vs_circle` in this scope at crates\collision\src\narrowphase\analytic.rs:141
+cannot find function `circle_vs_circle` in this scope at crates\collision\src\narrowphase\analytic.rs:156
+cannot find function `gjk_intersection` in this scope at crates\collision\src\narrowphase\gjk.rs:44
+cannot find function `gjk_intersection` in this scope at crates\collision\src\narrowphase\gjk.rs:56
+cannot find function `gjk_intersection` in this scope at crates\collision\src\narrowphase\gjk.rs:70
+cannot find function `sat_box_vs_box` in this scope at crates\collision\src\narrowphase\sat.rs:238
+cannot find function `sat_box_vs_box` in this scope at crates\collision\src\narrowphase\sat.rs:253
+cannot find function `sat_box_vs_box` in this scope at crates\collision\src\narrowphase\sat.rs:264
+cannot find function `sat_box_vs_box` in this scope at crates\collision\src\narrowphase\sat.rs:283
+cannot find function `sat_box_vs_box` in this scope at crates\collision\src\narrowphase\sat.rs:293
+cannot find function, tuple struct or tuple variant `BodyHandle` in this scope at crates\collision\src\pool.rs:115
+cannot find function, tuple struct or tuple variant `BodyHandle` in this scope at crates\collision\src\pool.rs:116
+cannot find function, tuple struct or tuple variant `BodyHandle` in this scope at crates\collision\src\pool.rs:152
+cannot find function, tuple struct or tuple variant `BodyHandle` in this scope at crates\collision\src\pool.rs:153
+cannot find function, tuple struct or tuple variant `BodyHandle` in this scope at crates\collision\src\pool.rs:170
+cannot find function, tuple struct or tuple variant `BodyHandle` in this scope at crates\collision\src\pool.rs:171
+cannot find function, tuple struct or tuple variant `BodyHandle` in this scope at crates\collision\src\pool.rs:200
+cannot find function, tuple struct or tuple variant `BodyHandle` in this scope at crates\collision\src\pool.rs:201
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\broadphase\bvh.rs:318
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\broadphase\bvh.rs:319
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\broadphase\bvh.rs:320
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\broadphase\bvh.rs:339
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\broadphase\bvh.rs:340
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\broadphase\bvh.rs:360
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\broadphase\bvh.rs:375
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\broadphase\bvh.rs:376
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\broadphase\bvh.rs:377
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\pool.rs:117
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\pool.rs:118
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\pool.rs:154
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\pool.rs:155
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\pool.rs:172
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\pool.rs:173
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\pool.rs:202
+cannot find function, tuple struct or tuple variant `ColliderHandle` in this scope at crates\collision\src\pool.rs:203
+cannot find struct, variant or union type `BoxShape` in this scope at crates\collision\src\narrowphase\analytic.rs:172
+cannot find struct, variant or union type `BoxShape` in this scope at crates\collision\src\narrowphase\analytic.rs:188
+cannot find struct, variant or union type `BoxShape` in this scope at crates\collision\src\narrowphase\analytic.rs:203
+cannot find struct, variant or union type `BoxShape` in this scope at crates\collision\src\narrowphase\sat.rs:234
+cannot find struct, variant or union type `BoxShape` in this scope at crates\collision\src\narrowphase\sat.rs:235
+cannot find struct, variant or union type `BoxShape` in this scope at crates\collision\src\narrowphase\sat.rs:249
+cannot find struct, variant or union type `BoxShape` in this scope at crates\collision\src\narrowphase\sat.rs:250
+cannot find struct, variant or union type `BoxShape` in this scope at crates\collision\src\narrowphase\sat.rs:260
+cannot find struct, variant or union type `BoxShape` in this scope at crates\collision\src\narrowphase\sat.rs:261
+cannot find struct, variant or union type `BoxShape` in this scope at crates\collision\src\narrowphase\sat.rs:279
+cannot find struct, variant or union type `BoxShape` in this scope at crates\collision\src\narrowphase\sat.rs:280
+cannot find struct, variant or union type `BoxShape` in this scope at crates\collision\src\narrowphase\sat.rs:289
+cannot find struct, variant or union type `BoxShape` in this scope at crates\collision\src\narrowphase\sat.rs:290
+cannot find struct, variant or union type `Circle` in this scope at crates\collision\src\narrowphase\analytic.rs:106
+cannot find struct, variant or union type `Circle` in this scope at crates\collision\src\narrowphase\analytic.rs:107
+cannot find struct, variant or union type `Circle` in this scope at crates\collision\src\narrowphase\analytic.rs:123
+cannot find struct, variant or union type `Circle` in this scope at crates\collision\src\narrowphase\analytic.rs:124
+cannot find struct, variant or union type `Circle` in this scope at crates\collision\src\narrowphase\analytic.rs:137
+cannot find struct, variant or union type `Circle` in this scope at crates\collision\src\narrowphase\analytic.rs:138
+cannot find struct, variant or union type `Circle` in this scope at crates\collision\src\narrowphase\analytic.rs:152
+cannot find struct, variant or union type `Circle` in this scope at crates\collision\src\narrowphase\analytic.rs:153
+cannot find struct, variant or union type `Circle` in this scope at crates\collision\src\narrowphase\analytic.rs:173
+cannot find struct, variant or union type `Circle` in this scope at crates\collision\src\narrowphase\analytic.rs:189
+cannot find struct, variant or union type `Circle` in this scope at crates\collision\src\narrowphase\analytic.rs:204
+cannot find struct, variant or union type `Circle` in this scope at crates\collision\src\narrowphase\gjk.rs:66
+cannot find struct, variant or union type `Circle` in this scope at crates\collision\src\narrowphase\gjk.rs:67
+cannot find struct, variant or union type `ContactFeatureId` in this scope at crates\collision\src\pool.rs:141
+cannot find struct, variant or union type `ContactFeatureId` in this scope at crates\collision\src\pool.rs:197
+cannot find struct, variant or union type `ContactManifold` in this scope at crates\collision\src\pool.rs:111
+cannot find struct, variant or union type `ContactManifold` in this scope at crates\collision\src\pool.rs:142
+cannot find struct, variant or union type `ContactManifold` in this scope at crates\collision\src\pool.rs:160
+cannot find struct, variant or union type `ContactManifold` in this scope at crates\collision\src\pool.rs:190
+cannot find struct, variant or union type `ContactPoint` in this scope at crates\collision\src\pool.rs:144
+cannot find struct, variant or union type `ContactPoint` in this scope at crates\collision\src\pool.rs:162
+cannot find struct, variant or union type `ContactPoint` in this scope at crates\collision\src\pool.rs:192
+failed to resolve: use of undeclared type `Aabb` at crates\collision\src\broadphase\bvh.rs:321
+failed to resolve: use of undeclared type `Aabb` at crates\collision\src\broadphase\bvh.rs:322
+failed to resolve: use of undeclared type `Aabb` at crates\collision\src\broadphase\bvh.rs:323
+failed to resolve: use of undeclared type `Aabb` at crates\collision\src\broadphase\bvh.rs:341
+failed to resolve: use of undeclared type `Aabb` at crates\collision\src\broadphase\bvh.rs:342
+failed to resolve: use of undeclared type `Aabb` at crates\collision\src\broadphase\bvh.rs:361
+failed to resolve: use of undeclared type `Aabb` at crates\collision\src\broadphase\bvh.rs:363
+failed to resolve: use of undeclared type `Aabb` at crates\collision\src\broadphase\bvh.rs:378
+failed to resolve: use of undeclared type `Aabb` at crates\collision\src\broadphase\bvh.rs:379
+failed to resolve: use of undeclared type `Aabb` at crates\collision\src\broadphase\bvh.rs:380
+failed to resolve: use of undeclared type `Aabb` at crates\collision\src\broadphase\bvh.rs:382
+failed to resolve: use of undeclared type `ContactPoint` at crates\collision\src\pool.rs:113
+failed to resolve: use of undeclared type `ContactPoint` at crates\collision\src\pool.rs:150
+failed to resolve: use of undeclared type `ContactPoint` at crates\collision\src\pool.rs:168
+failed to resolve: use of undeclared type `ContactPoint` at crates\collision\src\pool.rs:198
+failed to resolve: use of undeclared type `ContactPool` at crates\collision\src\pool.rs:110
+failed to resolve: use of undeclared type `ContactPool` at crates\collision\src\pool.rs:140
+failed to resolve: use of undeclared type `ContactPool` at crates\collision\src\pool.rs:177
+failed to resolve: use of undeclared type `ContactPool` at crates\collision\src\pool.rs:189
+failed to resolve: use of undeclared type `ContactPool` at crates\collision\src\pool.rs:207
+failed to resolve: use of undeclared type `ConvexPolygon` at crates\collision\src\narrowphase\gjk.rs:40
+failed to resolve: use of undeclared type `ConvexPolygon` at crates\collision\src\narrowphase\gjk.rs:41
+failed to resolve: use of undeclared type `ConvexPolygon` at crates\collision\src\narrowphase\gjk.rs:52
+failed to resolve: use of undeclared type `ConvexPolygon` at crates\collision\src\narrowphase\gjk.rs:53
+failed to resolve: use of undeclared type `DynamicAabbTree` at crates\collision\src\broadphase\bvh.rs:317
+failed to resolve: use of undeclared type `DynamicAabbTree` at crates\collision\src\broadphase\bvh.rs:338
+failed to resolve: use of undeclared type `DynamicAabbTree` at crates\collision\src\broadphase\bvh.rs:359
+failed to resolve: use of undeclared type `DynamicAabbTree` at crates\collision\src\broadphase\bvh.rs:374
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\analytic.rs:108
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\analytic.rs:109
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\analytic.rs:125
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\analytic.rs:126
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\analytic.rs:139
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\analytic.rs:140
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\analytic.rs:154
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\analytic.rs:155
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\analytic.rs:174
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\analytic.rs:175
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\analytic.rs:190
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\analytic.rs:191
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\analytic.rs:205
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\analytic.rs:206
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\gjk.rs:42
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\gjk.rs:43
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\gjk.rs:54
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\gjk.rs:55
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\gjk.rs:68
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\gjk.rs:69
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\sat.rs:236
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\sat.rs:237
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\sat.rs:251
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\sat.rs:252
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\sat.rs:262
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\sat.rs:263
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\sat.rs:281
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\sat.rs:282
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\sat.rs:291
+failed to resolve: use of undeclared type `Transform` at crates\collision\src\narrowphase\sat.rs:292
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\broadphase\bvh.rs:321
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\broadphase\bvh.rs:322
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\broadphase\bvh.rs:323
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\broadphase\bvh.rs:341
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\broadphase\bvh.rs:342
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\broadphase\bvh.rs:361
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\broadphase\bvh.rs:363
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\broadphase\bvh.rs:378
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\broadphase\bvh.rs:379
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\broadphase\bvh.rs:380
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\broadphase\bvh.rs:382
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:108
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:109
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:125
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:126
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:139
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:140
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:154
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:155
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:172
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:174
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:175
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:188
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:190
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:191
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:203
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:205
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:206
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:209
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:210
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:211
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\analytic.rs:212
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\gjk.rs:42
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\gjk.rs:43
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\gjk.rs:54
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\gjk.rs:55
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\gjk.rs:68
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\gjk.rs:69
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:234
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:235
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:236
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:237
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:249
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:250
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:251
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:252
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:260
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:261
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:262
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:263
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:266
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:267
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:268
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:269
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:279
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:280
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:281
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:282
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:289
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:290
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:291
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\narrowphase\sat.rs:292
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\pool.rs:112
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\pool.rs:143
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\pool.rs:145
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\pool.rs:161
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\pool.rs:163
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\pool.rs:191
+failed to resolve: use of undeclared type `Vec2` at crates\collision\src\pool.rs:193
