@@ -54,3 +54,4 @@ nav:
   - API Home: index.md
   - physics_math: math.md
   - physics_core: core.md
+  - physics_collision: collision.md

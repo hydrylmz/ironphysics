@@ -155,3 +155,54 @@ Returns `true` if this handle does not match the null representation.
 pub fn null() -> Self
 ```
 Returns a safely invalid handle.
+
+---
+
+## `ColliderHandle`
+**Struct** in `physics_core`
+
+An opaque $32$-bit handle referencing a collider within the engine. Wraps a `u32` slot index for $O(1)$ internal lookup.
+
+### Constructors
+
+#### `from_slot`
+```rust
+pub fn from_slot(slot: usize) -> Self
+```
+Creates a collider handle from a raw slot index.
+
+#### `null`
+```rust
+pub fn null() -> Self
+```
+Returns a null/invalid handle representation.
+
+### Public Methods
+
+#### `slot`
+```rust
+pub fn slot(&self) -> usize
+```
+Returns the raw slot index.
+
+#### `is_null`
+```rust
+pub fn is_null(&self) -> bool
+```
+Returns `true` if this handle matches the null representation.
+
+---
+
+## `Material`
+**Struct** in `physics_core`
+
+A physical material definition applied to colliders to control friction, bounce, and mass.
+
+### Properties
+
+| Name | Type | Description |
+| :--- | :--- | :--- |
+| `friction` | `f32` | Coefficient of friction (sliding resistance). Default: `0.5`. |
+| `restitution` | `f32` | Restitution coefficient (bounciness). Default: `0.0`. |
+| `density` | `f32` | Density of the material, used to calculate collider mass properties. Default: `1.0`. |
+
