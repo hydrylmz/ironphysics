@@ -51,7 +51,10 @@ extra_javascript:
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 nav:
-  - API Home: index.md
-  - physics_math: math.md
-  - physics_core: core.md
-  - physics_collision: collision.md
+  - Home: index.md
+  - User Guides:
+      - Rigid-bodies: rigid_bodies.md
+  - API Reference:
+      - physics_math: math.md
+      - physics_core: core.md
+      - physics_collision: collision.md

@@ -69,6 +69,10 @@ impl ContactPool {
         &self.manifolds
     }
 
+    pub fn manifolds_mut(&mut self) -> &mut [ContactManifold] {
+        &mut self.manifolds
+    }
+
     pub fn persist_contacts(
     previous: &ContactPool,
     current:  &mut ContactManifold,
@@ -103,7 +107,7 @@ impl ContactPool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use physics_core::{BodyHandle, ColliderHandle};
+    use crate::{BodyHandle, ColliderHandle};
     use physics_math::Vec2;
     use crate::narrowphase::manifold::{ContactFeatureId, ContactPoint};
 

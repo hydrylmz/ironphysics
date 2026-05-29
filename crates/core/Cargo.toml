@@ -5,3 +5,7 @@ edition = "2021"
 
 [dependencies]
 physics_math = { path = "../math" }
+physics_collision = { path = "../collision" }
+physics_dynamics = { path = "../dynamics" }
+rayon = { workspace = true }
+num_cpus = { workspace = true }

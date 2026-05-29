@@ -1,5 +1,5 @@
 use physics_math::{Transform, Vec2};
-use physics_core::{BodyHandle, ColliderHandle};
+use crate::{BodyHandle, ColliderHandle};
 use crate::narrowphase::manifold::{ContactManifold, ContactPoint, ContactFeatureId};
 use crate::shape::{BoxShape, Circle};
 

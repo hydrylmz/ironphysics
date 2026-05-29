@@ -5,8 +5,9 @@ edition = "2021"
 
 [dependencies]
 physics_math = { path = "../math" }
-physics_core = { path = "../core" }
 smallvec     = { version = "1.13", features = ["union"] }
+rayon = { workspace = true }
+
 
 [dev-dependencies]
 approx = "0.5"

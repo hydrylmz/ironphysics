@@ -1,5 +1,5 @@
 use physics_math::Vec2;
-use physics_core::{BodyHandle, ColliderHandle};
+use crate::{BodyHandle, ColliderHandle};
 
 pub const MAX_MANIFOLD_POINTS: usize = 2;
 

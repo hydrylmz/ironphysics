@@ -8,7 +8,21 @@ members = [
     "crates/core",
     "crates/math",
     "crates/collision",
+    "crates/dynamics",
 ]
+
+[[bench]]
+name    = "world_bench"
+harness = false
+
+[profile.bench]
+opt-level = 3
+lto       = "thin"
+codegen-units = 1
+
+[workspace.dependencies]
+rayon    = "1.10"
+num_cpus = "1.16"
 
 [dependencies]
 physics_math = { path = "crates/math" }
@@ -16,3 +30,6 @@ physics_core = { path = "crates/core" }
 
 [dev-dependencies]
 approx = "0.5"
+criterion = { version = "0.5", features = ["html_reports"] }
+physics_collision = { path = "crates/collision" }
+physics_dynamics = { path = "crates/dynamics" }

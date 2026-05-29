@@ -303,7 +303,6 @@ impl DynamicAabbTree {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use physics_core::ColliderHandle;
     use physics_math::{Vec2, aabb::Aabb};
 
     #[test]

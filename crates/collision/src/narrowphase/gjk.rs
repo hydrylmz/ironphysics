@@ -1,7 +1,6 @@
 use physics_math::{Transform, Vec2};
 use crate::shape::{Shape, support_world};
-#[cfg(test)]
-use crate::shape::{Circle, ConvexPolygon};
+
 
 /// Simplex is apparently the evolving set of support points in Minkowski space. (I love this Minkowski guy)
 /// In 2D, a simplex has at most 3 points (triangle).

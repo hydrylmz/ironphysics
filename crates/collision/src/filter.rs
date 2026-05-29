@@ -19,6 +19,16 @@ impl CollisionFilter {
     }
 }
 
+impl Default for CollisionFilter {
+    fn default() -> Self {
+        Self {
+            category_bits: 0xFFFF_FFFF,
+            mask_bits: 0xFFFF_FFFF,
+            group_index: 0,
+        }
+    }
+}
+
 /// Combine friction coefficients from two materials using the geometric mean.
 pub fn combined_friction(_filter_a: &CollisionFilter, _filter_b: &CollisionFilter) -> f32 {
     // This is a simple default implementation.

@@ -1,7 +1,7 @@
 const EPA_MAX_ITER:     usize = 32;
 const EPA_TOLERANCE:    f32   = 1e-4; //i am still amazed that f32 has 1e-4 thingy
 use physics_math::{Transform, Vec2};
-use physics_core::{BodyHandle, ColliderHandle};
+use crate::{BodyHandle, ColliderHandle};
 use crate::narrowphase::manifold::{ContactManifold, ContactPoint, ContactFeatureId};
 use crate::shape::Shape;
 use crate::narrowphase::gjk::{gjk_intersection, Simplex};

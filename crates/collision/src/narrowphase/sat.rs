@@ -1,5 +1,4 @@
-
-use physics_core::{BodyHandle, ColliderHandle};
+use crate::{BodyHandle, ColliderHandle};
 use physics_math::{Transform, Vec2};
 use crate::shape::BoxShape;
 use crate::narrowphase::manifold::{ContactManifold, ContactPoint, ContactFeatureId};
